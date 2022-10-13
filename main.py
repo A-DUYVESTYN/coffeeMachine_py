@@ -46,12 +46,17 @@ def printResourcesWithUnits():
 
 
 def enoughResources(drink):
+    """returns True if enough resources to make drink passed in"""
+    output = True
     for ingredient in MENU[drink]["ingredients"]:
         if resources[ingredient] < MENU[drink]["ingredients"][ingredient]:
-            return "Sorry there is not enough {}.".format(ingredient)
-    return True
+            output = False
+            print (f"Sorry there is not enough {ingredient}.")
+    return output
 
-def processCoins(drink):
+def processCoins():
+    """returns the total $ calculated from inserted coins"""
+    print("Please insert coins.")
     moneyGiven = 0
     for coin in coinValues:
         givenCoin = input("How many {}?: ".format(coin))
@@ -68,24 +73,26 @@ def processCoins(drink):
     return moneyGiven
 
 def processTransaction(drink):
+    """checks if enough money was inputted, prints feedback, processes transaction"""
     price = MENU[drink]["cost"]
-    moneyInput = processCoins(drink)
+    moneyInput = processCoins()
     if moneyInput <= price:
         print("Sorry that's not enough money. Money refunded.")
         return "unsuccessful"
     change = moneyInput - price
     resources["Money"] += price
-    print("Here is ${:.2f} dollars in change.".format(change))
+    print("Here is ${:.2f} in change.".format(change))
     return "success"
 
 def makeCoffee(drink):
+    """Deduct the ingredients from the resources"""
     for ingredient in MENU[drink]["ingredients"]:
         resources[ingredient] -= MENU[drink]["ingredients"][ingredient]
-    print("Here is your {}. Enjoy!".format(drink))
-    return
+    print("Here is your {}. Enjoy! ☕".format(drink))
 
 
 while machineStatus == "on":
+    print("---- MENU:|espresso|latte|cappuccino|  MACHINE OPTIONS:|report|off| ----")
     userAction = input("What would you like? (espresso/latte/cappuccino): ")
 
     if userAction == "off":
@@ -93,14 +100,9 @@ while machineStatus == "on":
     elif userAction == "report":
         printResourcesWithUnits()
     elif userAction in MENU.keys() :
-        enoughResource = enoughResources(userAction)
-        if enoughResource != True:
-            print(enoughResource)
-            continue
-
-        transaction = processTransaction(userAction)
-        if transaction == "success":
-            makeCoffee(userAction)
+        if enoughResources(userAction):
+            if processTransaction(userAction) == "success":
+                makeCoffee(userAction)
 
 
 
