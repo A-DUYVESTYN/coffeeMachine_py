@@ -35,18 +35,20 @@ coinValues = {"quarters": 0.25, "dimes": 0.10, "nickles": 0.05, "pennies": 0.01}
 machineStatus = "on"
 
 def turnOff():
+    """print closing message and return 'off'."""
     print("Goodbye")
     return "off"
 
 
 def printResourcesWithUnits():
+    """print a formatted report of the machine's current resources and Money."""
     for item in resources:
         stringFormat = "{0}: {1}{2:.2f}" if item == "Money" else "{0}: {2}{1}"
         print(stringFormat.format(item, resourceUnits[item], resources[item]))
 
 
 def enoughResources(drink):
-    """returns True if enough resources to make drink passed in"""
+    """return True if enough resources are available to make the drink provided as an arg."""
     output = True
     for ingredient in MENU[drink]["ingredients"]:
         if resources[ingredient] < MENU[drink]["ingredients"][ingredient]:
@@ -55,7 +57,7 @@ def enoughResources(drink):
     return output
 
 def processCoins():
-    """returns the total $ calculated from inserted coins"""
+    """return the total $ calculated from inserted coins."""
     print("Please insert coins.")
     moneyGiven = 0
     for coin in coinValues:
@@ -73,7 +75,11 @@ def processCoins():
     return moneyGiven
 
 def processTransaction(drink):
-    """checks if enough money was inputted, prints feedback, processes transaction"""
+    """check if enough money was inputted for drink provided as an arg, 
+    print feedback if not enough money and return 'unsuccessful'
+    if enough, process transaction, add money to machine, print change given, 
+    return 'success'.
+    """
     price = MENU[drink]["cost"]
     moneyInput = processCoins()
     if moneyInput <= price:
@@ -85,7 +91,7 @@ def processTransaction(drink):
     return "success"
 
 def makeCoffee(drink):
-    """Deduct the ingredients from the resources"""
+    """Deduct the ingredients from the resources required for drink provided as an arg."""
     for ingredient in MENU[drink]["ingredients"]:
         resources[ingredient] -= MENU[drink]["ingredients"][ingredient]
     print("Here is your {}. Enjoy! ☕".format(drink))
